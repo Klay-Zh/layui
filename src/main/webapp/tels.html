@@ -1,0 +1,154 @@
+<h1 class="layui-inline">通讯录</h1> 
+<button id="btn_add" class="layui-btn " style="margin:10px; float:right;">新增联系人</button>
+<hr class="layui-bg-black">
+<table id="demo" lay-filter="test"></table>
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="hidden-add">
+	<form class="layui-form" action="">
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">姓名</label>
+	    <div class="layui-input-inline">
+	      <input type="text" name="username" required  lay-verify="required" placeholder="请输入联系人" autocomplete="off" class="layui-input">
+	    </div>
+	  </div>
+	  <div class="layui-form-item">
+	    <label class="layui-form-label">电话</label>
+	    <div class="layui-input-inline">
+	      <input type="text" name="tel" required lay-verify="required" placeholder="请输入电话" autocomplete="off" class="layui-input">
+	    </div>
+	  </div>
+	  <div class="layui-form-item">
+	    <div class="layui-input-block">
+	      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	    </div>
+	  </div>
+	</form>
+</script>
+<script type="text/javascript">
+	layui.use(['layer', 'table','form'], function() {
+		var table = layui.table;
+		var layer = layui.layer;
+		var form = layui.form;
+		var $ = layui.jquery;
+		 $("#btn_add").click(function () {
+        layer.open({
+  type: 1,
+  shade:0.3,
+  skin: 'layui-layer-rim', //加上边框
+  area: ['420px', '240px'], //宽高
+  content: $('#hidden-add').html(),
+  success: function(){
+	  form.on("submit(formDemo)", function (data) {
+                        var load = layer.load(1, {shade: 0.3});
+                        $.get("/main/add.do", data.field, function (res) {
+                            layer.close(load);
+                            if (res.code == 1) {
+                                layer.closeAll();
+                                table.reload("demo");
+                                layer.msg("新增成功！", {icon: 1,time:1000});
+                            } else {
+                                layer.msg(res.msg, {icon: 2});
+                            }
+                        });
+                        return false;
+                    })
+  }
+});
+       
+    });
+		//第一个实例
+		table.render({
+			elem: '#demo',
+			url: '/main/getTels.do' //数据接口
+				,
+			page: true //开启分页
+				,
+			cols: [
+				[ //表头
+					{
+						field: 'id',
+						title: 'ID',
+						width: 80,
+						sort: true,
+						fixed: 'left'
+					}, {
+						field: 'name',
+						title: '姓名'
+					}, {
+						field: 'number',
+						title: '电话'
+					}, {
+						fixed: 'right',
+						width: 150,
+						title: '编辑',
+						align: 'center',
+						toolbar: '#barDemo'
+					}
+				]
+			]
+		});
+		//监听工具条
+		table.on('tool(test)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			var data = obj.data; //获得当前行数据
+			var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+			if (layEvent === 'del') { //删除
+				layer.confirm('真的删除行么', function(index) {
+					var load = layer.load(1, {
+						shade: 0.3
+					});
+					$.get('/main/del.do', {
+						id: data.id
+					}, function(data) {
+						layer.close(load);
+						if (data.code == 1) {
+							layer.msg('删除成功', {
+									icon: 1,
+									time: 1000
+								}),
+								table.reload('demo');
+						} else {
+							layer.msg(data.msg, {
+								icon: 5,
+								time: 1000
+							});
+						}
+					});
+					layer.close(index);
+				});
+			} else if (layEvent === 'edit') { //编辑
+				//do something
+				layer.prompt({
+					value: data.number,
+					title: '请输入电话',
+					area: ['800px', '350px'] //自定义文本域宽高
+				}, function(value, index, elem) {
+					 var load = layer.load(1, {shade: 0.3});
+					$.get('/main/mod.do',{id:data.id,tel:value},function(data){
+						layer.close(load);
+						if (data.code == 1) {
+							layer.msg('修改成功', {
+									icon: 1,
+									time: 1000
+								}),
+							table.reload('demo');
+						} else {
+							layer.msg(data.msg, {
+								icon: 5,
+								time: 1000
+							});
+						}
+					});
+					layer.close(index);
+				});
+				//同步更新缓存对应的值
+			}
+		});
+
+	});
+</script>

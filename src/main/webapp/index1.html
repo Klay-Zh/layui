@@ -1,0 +1,121 @@
+<h2 class="layui-inline">角色管理</h2>
+<button id="btn_add" class="layui-btn " style="margin:10px; float:right;">新增角色</button>
+<hr class="layui-bg-black">
+<table id="demo" lay-filter="test" style="text-align: center;"></table>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            elem: '#demo'
+            ,height: 312
+            ,url: '/power/users.do' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+
+                {field: 'id', title: 'ID',width: 100, sort: true,align: 'center', fixed: 'left'}
+                ,{field: 'role', title: '角色',align: 'center'}, {
+                    fixed: 'right',
+                    width: 150,
+                    title: '编辑',
+                    align: 'center',
+                    toolbar: '#barDemo'
+                }
+
+            ]]
+        });
+
+    });
+    layui.use(['layer', 'table','form'],function(){
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        $('#btn_add').click(function(){
+            layer.prompt({
+                title: '请输入角色名',
+                area: ['800px', '350px'] //自定义文本域宽高
+            }, function(value, index, elem) {
+                var load = layer.load(1, {shade: 0.3});
+                $.get('/power/add.do',{name:value},function(data){
+                    layer.close(load);
+                    if (data.code == 1) {
+                        layer.msg('新增成功', {
+                            icon: 1,
+                            time: 1000
+                        }),
+                            table.reload('demo');
+                    } else {
+                        layer.msg(data.msg, {
+                            icon: 5,
+                            time: 1000
+                        });
+                    }
+                });
+                layer.close(index);
+            });
+        });
+        //监听工具条
+        table.on('tool(test)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if (layEvent === 'del') { //删除
+                layer.confirm('真的删除角色么', function(index) {
+                    var load = layer.load(1, {
+                        shade: 0.3
+                    });
+                    $.get('/power/del.do', {
+                        id: data.id
+                    }, function(data) {
+                        layer.close(load);
+                        if (data.code == 1) {
+                            layer.msg('删除成功', {
+                                icon: 1,
+                                time: 1000
+                            }),
+                                table.reload('demo');
+                        } else {
+                            layer.msg(data.msg, {
+                                icon: 5,
+                                time: 1000
+                            });
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (layEvent === 'edit') { //编辑
+                //do something
+                layer.prompt({
+                    value: data.role,
+                    title: '请输入角色名',
+                    area: ['800px', '350px'] //自定义文本域宽高
+                }, function(value, index, elem) {
+                    var load = layer.load(1, {shade: 0.3});
+                    $.get('/power/mod.do',{id:data.id,name:value},function(data){
+                        layer.close(load);
+                        if (data.code == 1) {
+                            layer.msg('修改成功', {
+                                icon: 1,
+                                time: 1000
+                            }),
+                                table.reload('demo');
+                        } else {
+                            layer.msg(data.msg, {
+                                icon: 5,
+                                time: 1000
+                            });
+                        }
+                    });
+                    layer.close(index);
+                });
+                //同步更新缓存对应的值
+            }
+        });
+
+    });
+</script>

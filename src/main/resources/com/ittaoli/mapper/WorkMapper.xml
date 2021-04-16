@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ittaoli.dao.WorkMapper" >
+  <resultMap id="BaseResultMap" type="com.ittaoli.entity.Work" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="car_id" property="carId" jdbcType="VARCHAR" />
+    <result column="server_type" property="serverType" jdbcType="INTEGER" />
+    <result column="waiter_id" property="waiterId" jdbcType="INTEGER" />
+    <result column="repair_id" property="repairId" jdbcType="INTEGER" />
+    <result column="add_pr" property="addPr" jdbcType="INTEGER" />
+    <result column="adjust_pr" property="adjustPr" jdbcType="INTEGER" />
+    <result column="real_pr" property="realPr" jdbcType="INTEGER" />
+    <result column="pay_type" property="payType" jdbcType="INTEGER" />
+    <result column="pay_state" property="payState" jdbcType="INTEGER" />
+    <result column="car_km" property="carKm" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+    <result column="checkout _time" property="checkoutTime" jdbcType="TIMESTAMP" />
+    <result column="server_sug" property="serverSug" jdbcType="VARCHAR" />
+    <result column="sale_policy" property="salePolicy" jdbcType="VARCHAR" />
+    <result column="maintain_sug" property="maintainSug" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.ittaoli.entity.WorkWithBLOBs" extends="BaseResultMap" >
+    <result column="inspect_r" property="inspectR" jdbcType="LONGVARCHAR" />
+    <result column="server_proj" property="serverProj" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_id, car_id, server_type, waiter_id, repair_id, add_pr, adjust_pr, real_pr, 
+    pay_type, pay_state, car_km, create_time, pay_time, "checkout _time", server_sug, 
+    sale_policy, maintain_sug, remarks
+  </sql>
+  <sql id="Blob_Column_List" >
+    inspect_r, server_proj
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from work
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from work
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ittaoli.entity.WorkWithBLOBs" >
+    insert into work (id, order_id, car_id, 
+      server_type, waiter_id, repair_id, 
+      add_pr, adjust_pr, real_pr, 
+      pay_type, pay_state, car_km, 
+      create_time, pay_time, "checkout _time", 
+      server_sug, sale_policy, maintain_sug, 
+      remarks, inspect_r, server_proj
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=VARCHAR}, #{carId,jdbcType=VARCHAR}, 
+      #{serverType,jdbcType=INTEGER}, #{waiterId,jdbcType=INTEGER}, #{repairId,jdbcType=INTEGER}, 
+      #{addPr,jdbcType=INTEGER}, #{adjustPr,jdbcType=INTEGER}, #{realPr,jdbcType=INTEGER}, 
+      #{payType,jdbcType=INTEGER}, #{payState,jdbcType=INTEGER}, #{carKm,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{payTime,jdbcType=TIMESTAMP}, #{checkoutTime,jdbcType=TIMESTAMP}, 
+      #{serverSug,jdbcType=VARCHAR}, #{salePolicy,jdbcType=VARCHAR}, #{maintainSug,jdbcType=VARCHAR}, 
+      #{remarks,jdbcType=VARCHAR}, #{inspectR,jdbcType=LONGVARCHAR}, #{serverProj,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ittaoli.entity.WorkWithBLOBs" >
+    insert into work
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="serverType != null" >
+        server_type,
+      </if>
+      <if test="waiterId != null" >
+        waiter_id,
+      </if>
+      <if test="repairId != null" >
+        repair_id,
+      </if>
+      <if test="addPr != null" >
+        add_pr,
+      </if>
+      <if test="adjustPr != null" >
+        adjust_pr,
+      </if>
+      <if test="realPr != null" >
+        real_pr,
+      </if>
+      <if test="payType != null" >
+        pay_type,
+      </if>
+      <if test="payState != null" >
+        pay_state,
+      </if>
+      <if test="carKm != null" >
+        car_km,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="payTime != null" >
+        pay_time,
+      </if>
+      <if test="checkoutTime != null" >
+        "checkout _time",
+      </if>
+      <if test="serverSug != null" >
+        server_sug,
+      </if>
+      <if test="salePolicy != null" >
+        sale_policy,
+      </if>
+      <if test="maintainSug != null" >
+        maintain_sug,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="inspectR != null" >
+        inspect_r,
+      </if>
+      <if test="serverProj != null" >
+        server_proj,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=VARCHAR},
+      </if>
+      <if test="serverType != null" >
+        #{serverType,jdbcType=INTEGER},
+      </if>
+      <if test="waiterId != null" >
+        #{waiterId,jdbcType=INTEGER},
+      </if>
+      <if test="repairId != null" >
+        #{repairId,jdbcType=INTEGER},
+      </if>
+      <if test="addPr != null" >
+        #{addPr,jdbcType=INTEGER},
+      </if>
+      <if test="adjustPr != null" >
+        #{adjustPr,jdbcType=INTEGER},
+      </if>
+      <if test="realPr != null" >
+        #{realPr,jdbcType=INTEGER},
+      </if>
+      <if test="payType != null" >
+        #{payType,jdbcType=INTEGER},
+      </if>
+      <if test="payState != null" >
+        #{payState,jdbcType=INTEGER},
+      </if>
+      <if test="carKm != null" >
+        #{carKm,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payTime != null" >
+        #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkoutTime != null" >
+        #{checkoutTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="serverSug != null" >
+        #{serverSug,jdbcType=VARCHAR},
+      </if>
+      <if test="salePolicy != null" >
+        #{salePolicy,jdbcType=VARCHAR},
+      </if>
+      <if test="maintainSug != null" >
+        #{maintainSug,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectR != null" >
+        #{inspectR,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="serverProj != null" >
+        #{serverProj,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ittaoli.entity.WorkWithBLOBs" >
+    update work
+    <set >
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=VARCHAR},
+      </if>
+      <if test="serverType != null" >
+        server_type = #{serverType,jdbcType=INTEGER},
+      </if>
+      <if test="waiterId != null" >
+        waiter_id = #{waiterId,jdbcType=INTEGER},
+      </if>
+      <if test="repairId != null" >
+        repair_id = #{repairId,jdbcType=INTEGER},
+      </if>
+      <if test="addPr != null" >
+        add_pr = #{addPr,jdbcType=INTEGER},
+      </if>
+      <if test="adjustPr != null" >
+        adjust_pr = #{adjustPr,jdbcType=INTEGER},
+      </if>
+      <if test="realPr != null" >
+        real_pr = #{realPr,jdbcType=INTEGER},
+      </if>
+      <if test="payType != null" >
+        pay_type = #{payType,jdbcType=INTEGER},
+      </if>
+      <if test="payState != null" >
+        pay_state = #{payState,jdbcType=INTEGER},
+      </if>
+      <if test="carKm != null" >
+        car_km = #{carKm,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payTime != null" >
+        pay_time = #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkoutTime != null" >
+        "checkout _time" = #{checkoutTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="serverSug != null" >
+        server_sug = #{serverSug,jdbcType=VARCHAR},
+      </if>
+      <if test="salePolicy != null" >
+        sale_policy = #{salePolicy,jdbcType=VARCHAR},
+      </if>
+      <if test="maintainSug != null" >
+        maintain_sug = #{maintainSug,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectR != null" >
+        inspect_r = #{inspectR,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="serverProj != null" >
+        server_proj = #{serverProj,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ittaoli.entity.WorkWithBLOBs" >
+    update work
+    set order_id = #{orderId,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=VARCHAR},
+      server_type = #{serverType,jdbcType=INTEGER},
+      waiter_id = #{waiterId,jdbcType=INTEGER},
+      repair_id = #{repairId,jdbcType=INTEGER},
+      add_pr = #{addPr,jdbcType=INTEGER},
+      adjust_pr = #{adjustPr,jdbcType=INTEGER},
+      real_pr = #{realPr,jdbcType=INTEGER},
+      pay_type = #{payType,jdbcType=INTEGER},
+      pay_state = #{payState,jdbcType=INTEGER},
+      car_km = #{carKm,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      pay_time = #{payTime,jdbcType=TIMESTAMP},
+      "checkout _time" = #{checkoutTime,jdbcType=TIMESTAMP},
+      server_sug = #{serverSug,jdbcType=VARCHAR},
+      sale_policy = #{salePolicy,jdbcType=VARCHAR},
+      maintain_sug = #{maintainSug,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      inspect_r = #{inspectR,jdbcType=LONGVARCHAR},
+      server_proj = #{serverProj,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ittaoli.entity.Work" >
+    update work
+    set order_id = #{orderId,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=VARCHAR},
+      server_type = #{serverType,jdbcType=INTEGER},
+      waiter_id = #{waiterId,jdbcType=INTEGER},
+      repair_id = #{repairId,jdbcType=INTEGER},
+      add_pr = #{addPr,jdbcType=INTEGER},
+      adjust_pr = #{adjustPr,jdbcType=INTEGER},
+      real_pr = #{realPr,jdbcType=INTEGER},
+      pay_type = #{payType,jdbcType=INTEGER},
+      pay_state = #{payState,jdbcType=INTEGER},
+      car_km = #{carKm,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      pay_time = #{payTime,jdbcType=TIMESTAMP},
+      "checkout _time" = #{checkoutTime,jdbcType=TIMESTAMP},
+      server_sug = #{serverSug,jdbcType=VARCHAR},
+      sale_policy = #{salePolicy,jdbcType=VARCHAR},
+      maintain_sug = #{maintainSug,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

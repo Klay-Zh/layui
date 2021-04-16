@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>卡卡修车 - ITtaoli</title>
+        <link rel="icon" href="img/car.ico">
+		<link rel="stylesheet" href="layui/css/layui.css">
+	</head>
+    <style>
+        .layui-table-tips-main{display:none}
+        .layui-table-tips-c{display:none}
+    </style>
+	<body class="layui-layout-body">
+		<div class="layui-layout layui-layout-admin">
+			<div class="layui-header">
+				<div class="layui-logo">卡卡修车</div>
+				<ul class="layui-nav layui-layout-right">
+					<li class="layui-nav-item">
+						<a href="javascript:;">
+							<img src="img/head.jpg" class="layui-nav-img">
+							<span id="userName">贤心</span>
+						</a>
+					</li>
+					<li class="layui-nav-item"><a href="#">安全退出</a></li>
+				</ul>
+			</div>
+
+			<div class="layui-side layui-bg-black">
+				<div class="layui-side-scroll">
+					<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+					<ul class="layui-nav layui-nav-tree" id= "nav" lay-filter="test">
+						<li class="layui-nav-item "><a data-url="home.html" href="#1"><i class="layui-icon layui-icon-home"></i>&nbsp; 首页</a></li>
+						<script type="text/html" id="nav_menu">
+							<li class="layui-nav-item">
+								<a data-url="[[url]]" href="#[[id]]">
+									<i class="layui-icon">[[icon]]</i>&nbsp; [[title]]
+								</a>
+							</li>
+						</script>
+					</ul>
+				</div>
+			</div>
+
+			<div class="layui-body" style="padding:15px;">
+				<!-- 内容主体区域 -->
+				<div id="main">
+					
+				</div>
+			</div>
+
+			<div class="layui-footer">
+				<!-- 底部固定区域 -->
+				© ittaoli.com - 通讯录管理
+			</div>
+		</div>
+		<script type="text/html" id="hidden_re_password">
+			<form class="layui-form" style="margin: 15px 30px 20px 0px;">
+				<div class="layui-form-item">
+					<label class="layui-form-label">原密码：</label>
+					<div class="layui-input-block">
+						<input type="password" name="password" lay-verify="required" lay-verType="tips" autocomplete="off"
+							   placeholder="请输入原密码"
+							   class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">新密码：</label>
+					<div class="layui-input-block">
+						<input type="password" name="new_password" lay-verify="required" lay-verType="tips" autocomplete="off"
+							   placeholder="请输入新密码"
+							   class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">请确认：</label>
+					<div class="layui-input-block">
+						<input type="password" lay-verify="repwd" autocomplete="off"
+							   placeholder="请再次输入新密码" class="layui-input">
+					</div>
+				</div>
+				<div style="text-align: right;">
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					<button class="layui-btn" lay-submit="" lay-filter="re_password">
+						提交
+					</button>
+				</div>
+			</form>
+		</script>
+		<script src="layui/layui.js"></script>
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<script>
+			//JavaScript代码区域
+			layui.use(['element', 'layer', 'form'], function() {
+				var element = layui.element;
+				var layer = layui.layer;
+				var form = layui.form;
+				$('#nav').on('click','a[data-url]',function(e){
+					$('#main').load($(e.target).attr('data-url'));
+				});
+
+				$('.layui-layout-right>.layui-nav-item').last().find('a').click(function() {
+					layer.load(2);
+                    $.get('/admin/exit.do', function() {
+                        setTimeout(function() {
+                            layer.closeAll('loading');
+                            layer.msg('安全退出成功！', {
+                                time: 1000
+                            }, function() {
+                                location.href = 'login.html';
+                            });
+                        }, 1000);
+                    });
+				});
+				 $.get('/main/menu.do',function(data){
+				     if(!data){
+				         layer.msg('请先登陆',{icon: 4, time: 1500, shade: 0.5});
+                         setTimeout(function () {
+                             location.href = "index.html";
+                         }, 1500);
+					 }
+                     $('#userName').html(data.loginName);
+                     var li = $("#nav_menu").html();
+                     $.each(data.menu, function (index, item) {
+                         var temp = li.replace("[[id]]", item.id).replace("[[url]]", item.url).replace("[[icon]]", item.icon).replace("[[title]]", item.title);
+                         $("#nav").append(temp);
+                     });
+                     if (location.hash) {
+                         $('#nav').find("li a[href=\\" + location.hash + "]").click();
+                     } else {
+                         $('#nav').find("li:first a").click();
+                     }
+				 });
+
+			});
+            $("#re_password").click(function () {
+                layer.open({
+                    title: "修改密码"
+                    , type: 1
+                    , content: $("#hidden_re_password").html()
+                    , success: function () {
+                        layui.use(['form'], function () {
+                            var form = layui.form;
+                            form.verify({
+                                repwd: function (value, item) {
+                                    if (value != $("input[name=new_password]").val()) {
+                                        return '两次输入的密码不一致！';
+                                    }
+                                }
+                            });
+                            //修改密码按钮事件
+                            form.on("submit(re_password)", function (data) {
+                                var load = layer.load(1, {shade: 0.3});
+                                $.post("/admin/repwd.do", data.field, function (res) {
+                                    layer.close(load);
+                                    if (res.code == 1) {
+                                        layer.closeAll();
+                                        layer.msg("密码修改成功！" ,{icon: 1});
+                                    } else {
+                                        layer.msg(res.msg, {icon: 2});
+                                    }
+                                });
+                                return false;
+                            })
+                        })
+                    }
+                });
+            })
+
+ 
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ittaoli.dao.Out_stockMapper" >
+  <resultMap id="BaseResultMap" type="com.ittaoli.entity.Out_stock" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="out_type" property="outType" jdbcType="VARCHAR" />
+    <result column="stock_id" property="stockId" jdbcType="INTEGER" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, out_type, stock_id, number, time, remarks
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from out_stock
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from out_stock
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ittaoli.entity.Out_stock" >
+    insert into out_stock (id, out_type, stock_id, 
+      number, time, remarks
+      )
+    values (#{id,jdbcType=INTEGER}, #{outType,jdbcType=VARCHAR}, #{stockId,jdbcType=INTEGER}, 
+      #{number,jdbcType=INTEGER}, #{time,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ittaoli.entity.Out_stock" >
+    insert into out_stock
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="outType != null" >
+        out_type,
+      </if>
+      <if test="stockId != null" >
+        stock_id,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="outType != null" >
+        #{outType,jdbcType=VARCHAR},
+      </if>
+      <if test="stockId != null" >
+        #{stockId,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ittaoli.entity.Out_stock" >
+    update out_stock
+    <set >
+      <if test="outType != null" >
+        out_type = #{outType,jdbcType=VARCHAR},
+      </if>
+      <if test="stockId != null" >
+        stock_id = #{stockId,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ittaoli.entity.Out_stock" >
+    update out_stock
+    set out_type = #{outType,jdbcType=VARCHAR},
+      stock_id = #{stockId,jdbcType=INTEGER},
+      number = #{number,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
